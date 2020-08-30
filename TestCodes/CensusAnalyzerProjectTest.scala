@@ -2,6 +2,7 @@ import org.scalatest.FunSuite
 import CensusAnalyzerProject.{CensusAnalyzer, CensusAnalyzerExceptionEnum}
 
 class CensusAnalyzerProjectTest extends FunSuite{
+  
   test("test_MatchingNumberOfRows_Input_CSVFileWithRightPath_ReturnNumberOfrows"){
     val objCensus = new CensusAnalyzer()
     assert(objCensus.loadCSVData("./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCensusData.csv") == 29)
@@ -29,6 +30,13 @@ class CensusAnalyzerProjectTest extends FunSuite{
       objCensus.loadCSVData("./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCensusDataWrongDelimiter.csv")
     }
     assert(thrown.getMessage == CensusAnalyzerExceptionEnum.inCorrectDelimiter.toString)
-
   }
+
+  test("test_InputFileFieldsWrong_ReturnIncorrectFieldsException") {
+    val objCensus = new CensusAnalyzer
+    val thrown = intercept[Exception] {
+      objCensus.loadCSVData("./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCensusDataWrongFields.csv")
+    }
+    assert(thrown.getMessage == CensusAnalyzerExceptionEnum.inCorrectFields.toString)
+    }
 }
