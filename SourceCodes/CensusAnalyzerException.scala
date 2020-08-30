@@ -8,4 +8,5 @@ object CensusAnalyzerExceptionEnum extends Enumeration {
   val inCorrectPath = Value("Incorrect Path Specified")
   val inCorrectFile = Value("Incorrect File Specified")
   val inCorrectDelimiter = Value("Incorrect Delimiter Specified")
+  val inCorrectFields = Value("Incorrect Fields Specified")
 }
