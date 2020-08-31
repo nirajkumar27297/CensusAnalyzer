@@ -6,6 +6,7 @@ import java.util
 import com.opencsv.CSVWriter
 import com.opencsv.bean.CsvToBeanBuilder
 import CensusAnalyzerProject.IndiaStateCensus
+import CensusAnalyzerProject.OpenCSVBuilder
 class CensusAnalyzer {
 
   def loadCSVDataIndiaStateCensus(filePath:String): Int = {
@@ -14,7 +15,7 @@ class CensusAnalyzer {
         throw new CensusAnalyzerException(CensusAnalyzerExceptionEnum.inCorrectFile)
       }
       val reader = Files.newBufferedReader(Paths.get(filePath))
-      val censusCSVIterator = getIterator(reader,classOf[IndiaStateCensus])
+      val censusCSVIterator = new OpenCSVBuilder().getIterator(reader,classOf[IndiaStateCensus])
       getCountRows(censusCSVIterator)
     }
     catch {
@@ -29,7 +30,7 @@ class CensusAnalyzer {
       }
       val fileReader = Files.newBufferedReader(Paths.get(filePath))
       var countRows = 0
-      val censusCSVIterator = getIterator(fileReader,classOf[IndianStateCode])
+      val censusCSVIterator = new OpenCSVBuilder().getIterator(fileReader,classOf[IndianStateCode])
       getCountRows(censusCSVIterator)
     }
     catch {
@@ -37,18 +38,7 @@ class CensusAnalyzer {
     }
   }
 
-  private def getIterator[T](reader: Reader, csvClass:Class[T]): util.Iterator[T] = {
-    try {
-        val csvToBeanBuilder = new CsvToBeanBuilder[T](reader)
-        csvToBeanBuilder.withType(csvClass)
-        csvToBeanBuilder.withIgnoreLeadingWhiteSpace(true)
-        val csvToBean = csvToBeanBuilder.build()
-        csvToBean.iterator()
-    }
-    catch {
-      case ex:java.lang.RuntimeException => throw new CensusAnalyzerException(CensusAnalyzerExceptionEnum.unableToParse)
-    }
-  }
+
 
   def getCountRows[T](fileiterator: util.Iterator[T]):Int = {
     var countRows = 0
