@@ -15,13 +15,7 @@ class CensusAnalyzer {
       }
       val reader = Files.newBufferedReader(Paths.get(filePath))
       val censusCSVIterator = getIterator(reader,classOf[IndiaStateCensus])
-      var countRows = 0
-
-      while(censusCSVIterator.hasNext()) {
-        countRows += 1
-        censusCSVIterator.next()
-      }
-      countRows
+      getCountRows(censusCSVIterator)
     }
     catch {
       case ex:java.nio.file.NoSuchFileException => throw new CensusAnalyzerException(CensusAnalyzerExceptionEnum.inCorrectPath)
@@ -36,11 +30,7 @@ class CensusAnalyzer {
       val fileReader = Files.newBufferedReader(Paths.get(filePath))
       var countRows = 0
       val censusCSVIterator = getIterator(fileReader,classOf[IndianStateCode])
-      while (censusCSVIterator.hasNext()) {
-        countRows += 1
-        censusCSVIterator.next()
-      }
-      countRows
+      getCountRows(censusCSVIterator)
     }
     catch {
       case ex: java.nio.file.NoSuchFileException => throw new CensusAnalyzerException(CensusAnalyzerExceptionEnum.inCorrectPath)
@@ -58,5 +48,14 @@ class CensusAnalyzer {
     catch {
       case ex:java.lang.RuntimeException => throw new CensusAnalyzerException(CensusAnalyzerExceptionEnum.unableToParse)
     }
+  }
+
+  def getCountRows[T](fileiterator: util.Iterator[T]):Int = {
+    var countRows = 0
+    while(fileiterator.hasNext()) {
+      countRows += 1
+      fileiterator.next()
+    }
+    countRows
   }
 }
