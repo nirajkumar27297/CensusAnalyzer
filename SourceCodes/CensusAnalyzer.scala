@@ -1,5 +1,11 @@
 package CensusAnalyzerProject
+import java.io.Reader
+import java.nio.file.{Files, Paths}
+import java.util
 
+import com.opencsv.CSVWriter
+import com.opencsv.bean.CsvToBeanBuilder
+import CensusAnalyzerProject.IndiaStateCensus
 class CensusAnalyzer {
 
   def loadCSVDataIndiaStateCensus(filePath:String): Int = {
@@ -7,56 +13,50 @@ class CensusAnalyzer {
       if(!filePath.toLowerCase.endsWith(".csv")) {
         throw new CensusAnalyzerException(CensusAnalyzerExceptionEnum.inCorrectFile)
       }
-      val fileReader = io.Source.fromFile(filePath)
+      val reader = Files.newBufferedReader(Paths.get(filePath))
+      val censusCSVIterator = getIterator(reader,classOf[IndiaStateCensus])
       var countRows = 0
-      var colsLength = 0
-      for(line <- fileReader.getLines()) {
-        val cols = line.split(",").map(_.trim)
-        if(countRows == 0) {
-          colsLength = cols.length
-          if(cols(0).toLowerCase != "state" || cols(1).toLowerCase != "population" || cols(2).toLowerCase != "areainsqkm" || cols(3).toLowerCase != "densitypersqkm" ) {
-            throw new CensusAnalyzerException(CensusAnalyzerExceptionEnum.inCorrectFields)
-          }
-        }
-        if(cols.length != colsLength) {
-          throw new CensusAnalyzerException(CensusAnalyzerExceptionEnum.inCorrectDelimiter)
-        }
+
+      while(censusCSVIterator.hasNext()) {
         countRows += 1
+        censusCSVIterator.next()
       }
-      countRows - 1
+      countRows
     }
     catch {
-      case ex:java.io.FileNotFoundException => throw new CensusAnalyzerException(CensusAnalyzerExceptionEnum.inCorrectPath)
+      case ex:java.nio.file.NoSuchFileException => throw new CensusAnalyzerException(CensusAnalyzerExceptionEnum.inCorrectPath)
     }
   }
 
   def loadCSVDataIndiaStateCode(filePath:String):Int = {
     try {
-      if(!filePath.toLowerCase.endsWith(".csv")) {
+      if (!filePath.toLowerCase.endsWith(".csv")) {
         throw new CensusAnalyzerException(CensusAnalyzerExceptionEnum.inCorrectFile)
       }
-      val fileReader = io.Source.fromFile(filePath)
+      val fileReader = Files.newBufferedReader(Paths.get(filePath))
       var countRows = 0
-      var colsLength = 0
-      for(line <- fileReader.getLines()) {
-        val cols = line.split(",").map(_.trim)
-        if(countRows == 0) {
-          colsLength = cols.length
-          if(cols(1).toLowerCase != "state name" || cols(3).toLowerCase != "statecode") {
-            throw new CensusAnalyzerException(CensusAnalyzerExceptionEnum.inCorrectFields)
-          }
-        }
-        if(cols.length != colsLength) {
-          throw new CensusAnalyzerException(CensusAnalyzerExceptionEnum.inCorrectDelimiter)
-        }
+      val censusCSVIterator = getIterator(fileReader,classOf[IndianStateCode])
+      while (censusCSVIterator.hasNext()) {
         countRows += 1
+        censusCSVIterator.next()
       }
-
-      countRows - 1
+      countRows
     }
     catch {
-      case ex:java.io.FileNotFoundException => throw new CensusAnalyzerException(CensusAnalyzerExceptionEnum.inCorrectPath)
+      case ex: java.nio.file.NoSuchFileException => throw new CensusAnalyzerException(CensusAnalyzerExceptionEnum.inCorrectPath)
     }
+  }
 
+  private def getIterator[T](reader: Reader, csvClass:Class[T]): util.Iterator[T] = {
+    try {
+        val csvToBeanBuilder = new CsvToBeanBuilder[T](reader)
+        csvToBeanBuilder.withType(csvClass)
+        csvToBeanBuilder.withIgnoreLeadingWhiteSpace(true)
+        val csvToBean = csvToBeanBuilder.build()
+        csvToBean.iterator()
+    }
+    catch {
+      case ex:java.lang.RuntimeException => throw new CensusAnalyzerException(CensusAnalyzerExceptionEnum.unableToParse)
+    }
   }
 }
