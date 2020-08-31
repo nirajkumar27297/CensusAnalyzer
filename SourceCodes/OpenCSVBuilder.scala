@@ -6,6 +6,7 @@ import java.util
 import com.opencsv.bean.CsvToBeanBuilder
 
 class OpenCSVBuilder[T] extends TraitCSVBuilder {
+  @throws[CSVBuilderException]
   def getIterator[T](reader: Reader, csvClass:Class[T]): util.Iterator[T] = {
     try {
       val csvToBeanBuilder = new CsvToBeanBuilder[T](reader)
@@ -15,8 +16,7 @@ class OpenCSVBuilder[T] extends TraitCSVBuilder {
       csvToBean.iterator()
     }
     catch {
-      case _:java.lang.RuntimeException => throw new CensusAnalyzerException(CensusAnalyzerExceptionEnum.unableToParse)
+      case _:java.lang.RuntimeException => throw new CSVBuilderException(CSVBuilderExceptionEnum.unableToParse)
     }
   }
-
 }
