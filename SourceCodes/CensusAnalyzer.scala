@@ -1,12 +1,7 @@
 package CensusAnalyzerProject
-import java.io.Reader
 import java.nio.file.{Files, Paths}
 import java.util
 
-import com.opencsv.CSVWriter
-import com.opencsv.bean.CsvToBeanBuilder
-import CensusAnalyzerProject.IndiaStateCensus
-import CensusAnalyzerProject.OpenCSVBuilder
 class CensusAnalyzer {
 
   def loadCSVDataIndiaStateCensus(filePath:String): Int = {
@@ -15,11 +10,12 @@ class CensusAnalyzer {
         throw new CensusAnalyzerException(CensusAnalyzerExceptionEnum.inCorrectFile)
       }
       val reader = Files.newBufferedReader(Paths.get(filePath))
-      val censusCSVIterator = new OpenCSVBuilder().getIterator(reader,classOf[IndiaStateCensus])
+      val csvBuilder = CSVBuilderFactory.createCSVBuilder()
+      val censusCSVIterator = csvBuilder.getIterator(reader,classOf[IndiaStateCensus])
       getCountRows(censusCSVIterator)
     }
     catch {
-      case ex:java.nio.file.NoSuchFileException => throw new CensusAnalyzerException(CensusAnalyzerExceptionEnum.inCorrectPath)
+      case _:java.nio.file.NoSuchFileException => throw new CensusAnalyzerException(CensusAnalyzerExceptionEnum.inCorrectPath)
     }
   }
 
@@ -29,12 +25,12 @@ class CensusAnalyzer {
         throw new CensusAnalyzerException(CensusAnalyzerExceptionEnum.inCorrectFile)
       }
       val fileReader = Files.newBufferedReader(Paths.get(filePath))
-      var countRows = 0
-      val censusCSVIterator = new OpenCSVBuilder().getIterator(fileReader,classOf[IndianStateCode])
+      val csvBuilder = CSVBuilderFactory.createCSVBuilder()
+      val censusCSVIterator = csvBuilder.getIterator(fileReader,classOf[IndianStateCode])
       getCountRows(censusCSVIterator)
     }
     catch {
-      case ex: java.nio.file.NoSuchFileException => throw new CensusAnalyzerException(CensusAnalyzerExceptionEnum.inCorrectPath)
+      case _: java.nio.file.NoSuchFileException => throw new CensusAnalyzerException(CensusAnalyzerExceptionEnum.inCorrectPath)
     }
   }
 
