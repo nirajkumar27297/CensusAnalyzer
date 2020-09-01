@@ -16,8 +16,7 @@ class CensusAnalyzer {
     censusStateMap =  new CensusLoader().loadData(classOf[IndianStateCode],filepath)
     censusStateMap.size
   }
-
-
+  
   def sort(censusComparator: Comparator[IndiaStateCensusDAO]):String = {
     if (censusMap == null || censusMap.size == 0) {
       throw new CensusAnalyzerException(CensusAnalyzerExceptionEnum.noCensusData)
@@ -51,9 +50,6 @@ class CensusAnalyzer {
     sort(censusComparator)
   }
 
-
-
-
   def getStateWiseSortedCensusData():String = {
     val censusComparator = new Comparator[IndiaStateCensusDAO] {
       override def compare(o1: IndiaStateCensusDAO, o2: IndiaStateCensusDAO): Int = {
@@ -62,6 +58,7 @@ class CensusAnalyzer {
     }
     sort(censusComparator)
   }
+
   def getPopulationDensityWiseSortedCensusData():String = {
     val censusComparator = new Comparator[IndiaStateCensusDAO] {
       override def compare(o1: IndiaStateCensusDAO, o2: IndiaStateCensusDAO): Int = {
@@ -70,6 +67,7 @@ class CensusAnalyzer {
     }
     sort(censusComparator.reversed())
   }
+
   def getPopulationWiseSortedCensusData():String = {
     val censusComparator = new Comparator[IndiaStateCensusDAO] {
       override def compare(o1: IndiaStateCensusDAO, o2: IndiaStateCensusDAO): Int = {
