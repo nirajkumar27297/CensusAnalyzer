@@ -11,8 +11,8 @@ class CensusAnalyzer {
       }
       val reader = Files.newBufferedReader(Paths.get(filePath))
       val csvBuilder = CSVBuilderFactory.createCSVBuilder()
-      val censusCSVIterator = csvBuilder.getIterator(reader,classOf[IndiaStateCensus])
-      getCountRows(censusCSVIterator)
+      val censusCSVList = csvBuilder.getList(reader,classOf[IndiaStateCensus])
+      censusCSVList.size()
     }
     catch {
       case _:java.nio.file.NoSuchFileException => throw new CensusAnalyzerException(CensusAnalyzerExceptionEnum.inCorrectPath)
@@ -27,8 +27,8 @@ class CensusAnalyzer {
       }
       val fileReader = Files.newBufferedReader(Paths.get(filePath))
       val csvBuilder = CSVBuilderFactory.createCSVBuilder()
-      val censusCSVIterator = csvBuilder.getIterator(fileReader,classOf[IndianStateCode])
-      getCountRows(censusCSVIterator)
+      val censusCSVList = csvBuilder.getList(fileReader,classOf[IndianStateCode])
+      censusCSVList.size()
     }
     catch {
       case _: java.nio.file.NoSuchFileException => throw new CensusAnalyzerException(CensusAnalyzerExceptionEnum.inCorrectPath)
