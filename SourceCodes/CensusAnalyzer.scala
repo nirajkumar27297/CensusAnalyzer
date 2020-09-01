@@ -25,7 +25,6 @@ class CensusAnalyzer {
         }
       }
     }
-
   }
 
   def getStateWiseSortedStatesData():String  = {
@@ -41,7 +40,8 @@ class CensusAnalyzer {
     val sortedStateCensusCensus = new Gson().toJson(censusCSVList)
     sortedStateCensusCensus
   }
-def loadCSVDataIndiaStateCensus(filePath:String): Int = {
+
+  def loadCSVDataIndiaStateCensus(filePath:String): Int = {
     try {
       if(!filePath.toLowerCase.endsWith(".csv")) {
         throw new CensusAnalyzerException(CensusAnalyzerExceptionEnum.inCorrectFile)
