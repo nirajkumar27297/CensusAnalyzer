@@ -52,6 +52,8 @@ class CensusAnalyzer {
   }
 
 
+
+
   def getStateWiseSortedCensusData():String = {
     val censusComparator = new Comparator[IndiaStateCensusDAO] {
       override def compare(o1: IndiaStateCensusDAO, o2: IndiaStateCensusDAO): Int = {
@@ -59,6 +61,22 @@ class CensusAnalyzer {
       }
     }
     sort(censusComparator)
+  }
+  def getPopulationDensityWiseSortedCensusData():String = {
+    val censusComparator = new Comparator[IndiaStateCensusDAO] {
+      override def compare(o1: IndiaStateCensusDAO, o2: IndiaStateCensusDAO): Int = {
+        o1.densityPerSqKm.compareTo(o2.densityPerSqKm)
+      }
+    }
+    sort(censusComparator.reversed())
+  }
+  def getPopulationWiseSortedCensusData():String = {
+    val censusComparator = new Comparator[IndiaStateCensusDAO] {
+      override def compare(o1: IndiaStateCensusDAO, o2: IndiaStateCensusDAO): Int = {
+        o1.population.compareTo(o2.population)
+      }
+    }
+    sort(censusComparator.reversed())
   }
 
   def getCountRows[T](fileiterator: util.Iterator[T]):Int = {
