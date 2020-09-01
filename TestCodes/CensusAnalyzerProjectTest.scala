@@ -151,4 +151,22 @@ class CensusAnalyzerProjectTest extends FunSuite{
     }
     assert(thrown.getMessage == CensusAnalyzerExceptionEnum.noCensusData.toString)
   }
+
+  test("test_GivenInput_IndianCensusData_SortedOnAreaDecreasingOrder_ReturnSortedResult") {
+    val objCensus = new CensusAnalyzer()
+    objCensus.loadCensusData("./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCensusData.csv")
+    val sortedCensusData = objCensus.getAreaWiseSortedCensusData()
+
+    val censusCSV = new Gson().fromJson(sortedCensusData,classOf[Array[IndiaStateCensus]])
+    assert(censusCSV(0).state == "Rajasthan")
+    assert(censusCSV.last.state == "Goa")
+  }
+
+  test("test_InputEmptyData_SortedOnAreaDecreasingOrder_RaisenoCensusDataException") {
+    val objCensus = new CensusAnalyzer()
+    val thrown = intercept[Exception] {
+      val sortedCensusData = objCensus.getAreaWiseSortedCensusData()
+    }
+    assert(thrown.getMessage == CensusAnalyzerExceptionEnum.noCensusData.toString)
+  }
 }
