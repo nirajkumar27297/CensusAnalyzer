@@ -1,11 +1,11 @@
 package CensusAnalyzerProject
+class CSVBuilderException(message:CSVBuilderExceptionEnum.Value) extends Exception(message.toString) {}
 
-class CensusAnalyzerException(message:CensusAnalyzerExceptionEnum.Value) extends Exception(message.toString) {}
 
-
-object CensusAnalyzerExceptionEnum extends Enumeration {
-  type CensusAnalyzerException = Value
+object CSVBuilderExceptionEnum extends Enumeration {
+  type CSVBuilderException = Value
   val inCorrectPath = Value("Incorrect Path Specified")
   val inCorrectFile = Value("Incorrect File Specified")
   val unableToParse = Value("Not able to Parse Invalid Delimiter or Fields")
 }
+
