@@ -8,4 +8,5 @@ object CensusAnalyzerExceptionEnum extends Enumeration {
   val inCorrectPath = Value("Incorrect Path Specified")
   val inCorrectFile = Value("Incorrect File Specified")
   val unableToParse = Value("Not able to Parse Invalid Delimiter or Fields")
+  val noCensusData = Value("No Census Data Present")
 }
