@@ -1,9 +1,10 @@
 import org.scalatest.FunSuite
-import CensusAnalyzerProject.{CensusAnalyzer, CensusAnalyzerExceptionEnum}
+import CensusAnalyzerProject.{CensusAnalyzer, CensusAnalyzerExceptionEnum, IndiaStateCensus}
+import com.google.gson.Gson
 
 class CensusAnalyzerProjectTest extends FunSuite{
 
-  test("test_IndiaStateCensus_MatchingNumberOfRows_Input_CSVFileWithRightPath_ReturnNumberOfrows"){
+  test("test_IndiaStateCensus_MatchingNumberOfRows_Input_CSVFileWithRightPath_ReturnNumberOfRows"){
     val objCensus = new CensusAnalyzer()
     assert(objCensus.loadCSVDataIndiaStateCensus("./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCensusData.csv") == 29)
   }
@@ -29,7 +30,7 @@ class CensusAnalyzerProjectTest extends FunSuite{
       val objCensus = new CensusAnalyzer()
       objCensus.loadCSVDataIndiaStateCensus("./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCensusDataWrongDelimiter.csv")
     }
-    assert(thrown.getMessage == CensusAnalyzerExceptionEnum.inCorrectDelimiter.toString)
+    assert(thrown.getMessage == CensusAnalyzerExceptionEnum.unableToParse.toString)
   }
 
   test("test_IndiaStateCensus_InputFileFieldsWrong_ReturnIncorrectFieldsException") {
@@ -37,7 +38,7 @@ class CensusAnalyzerProjectTest extends FunSuite{
     val thrown = intercept[Exception] {
       objCensus.loadCSVDataIndiaStateCensus("./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCensusDataWrongFields.csv")
     }
-    assert(thrown.getMessage == CensusAnalyzerExceptionEnum.inCorrectFields.toString)
+    assert(thrown.getMessage == CensusAnalyzerExceptionEnum.unableToParse.toString)
     }
 
   test("test_IndiaStateCode_MatchingNumberOfRows_Input_CSVFileWithRightPath_ReturnNumberOfrows"){
@@ -66,7 +67,7 @@ class CensusAnalyzerProjectTest extends FunSuite{
       val objCensus = new CensusAnalyzer()
       objCensus.loadCSVDataIndiaStateCode("./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCodeWrongDelimiter.csv")
     }
-    assert(thrown.getMessage == CensusAnalyzerExceptionEnum.inCorrectDelimiter.toString)
+    assert(thrown.getMessage == CensusAnalyzerExceptionEnum.unableToParse.toString)
   }
 
   test("test_InputFileFieldsWrong_ReturnIncorrectFieldsException") {
@@ -74,9 +75,23 @@ class CensusAnalyzerProjectTest extends FunSuite{
     val thrown = intercept[Exception] {
       objCensus.loadCSVDataIndiaStateCensus("./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCodeWrongFields.csv")
     }
-    assert(thrown.getMessage == CensusAnalyzerExceptionEnum.inCorrectFields.toString)
+    assert(thrown.getMessage == CensusAnalyzerExceptionEnum.unableToParse.toString)
   }
 
+  test("test_InputIndianCensusData_SortedOnStates_ReturnSortedResult") {
+    val objCensus = new CensusAnalyzer()
+    objCensus.loadCSVDataIndiaStateCensus("./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCensusData.csv")
+    val sortedCensusData = objCensus.getStateWiseSortedStatesData()
 
+    val censusCSV = new Gson().fromJson(sortedCensusData,classOf[Array[IndiaStateCensus]])
+    assert(censusCSV(0).state == "Andhra Pradesh")
+  }
 
+  test("test_InputEmptyData_SortedOnStates_ReturnException") {
+    val objCensus = new CensusAnalyzer()
+    val thrown = intercept[Exception] {
+      val sortedCensusData = objCensus.getStateWiseSortedStatesData()
+    }
+    assert(thrown.getMessage == CensusAnalyzerExceptionEnum.noCensusData.toString)
+  }
 }
