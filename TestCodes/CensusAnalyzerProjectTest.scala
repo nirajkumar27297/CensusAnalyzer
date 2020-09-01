@@ -88,13 +88,14 @@ class CensusAnalyzerProjectTest extends FunSuite{
     assert(censusCSV.last.state == "West Bengal")
   }
 
-  test("test_InputEmptyData_SortedOnStates_ReturnException") {
+  test("test_InputEmptyData_SortedOnStates_RaisenoCensusDataException") {
     val objCensus = new CensusAnalyzer()
     val thrown = intercept[Exception] {
       val sortedCensusData = objCensus.getStateWiseSortedCensusData()
     }
     assert(thrown.getMessage == CensusAnalyzerExceptionEnum.noCensusData.toString)
   }
+
   test("test_GivenInput_IndianCensusDataAndIndianStateCodes_SortedOnStatesCodes_ReturnSortedResult") {
     val objCensus = new CensusAnalyzer()
     objCensus.loadCensusData("./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCensusData.csv")
@@ -107,7 +108,25 @@ class CensusAnalyzerProjectTest extends FunSuite{
     assert(censusCSV.last.state == "West Bengal")
   }
 
-  test("test_InputEmptyData_SortedOnStatesCodes_ReturnException") {
+  test("test_InputEmptyData_SortedOnStatesCodes_RaisenoCensusDataException") {
+    val objCensus = new CensusAnalyzer()
+    val thrown = intercept[Exception] {
+      val sortedCensusData = objCensus.getStateCodeWiseSortedCensusData()
+    }
+    assert(thrown.getMessage == CensusAnalyzerExceptionEnum.noCensusData.toString)
+  }
+
+  test("test_GivenInput_IndianCensusData_SortedOnPopulationDensityDecreasingOrder_ReturnSortedResult") {
+    val objCensus = new CensusAnalyzer()
+    objCensus.loadCensusData("./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCensusData.csv")
+    val sortedCensusData = objCensus.getPopulationDensityWiseSortedCensusData()
+
+    val censusCSV = new Gson().fromJson(sortedCensusData,classOf[Array[IndiaStateCensus]])
+    assert(censusCSV(0).state == "Bihar")
+    assert(censusCSV.last.state == "Arunachal Pradesh")
+  }
+
+  test("test_InputEmptyData_SortedOnPopulationDensityDecreasingOrder_RaisenoCensusDataException") {
     val objCensus = new CensusAnalyzer()
     val thrown = intercept[Exception] {
       val sortedCensusData = objCensus.getStateCodeWiseSortedCensusData()
