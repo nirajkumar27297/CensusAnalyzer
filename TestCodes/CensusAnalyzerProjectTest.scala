@@ -85,6 +85,7 @@ class CensusAnalyzerProjectTest extends FunSuite{
 
     val censusCSV = new Gson().fromJson(sortedCensusData,classOf[Array[IndiaStateCensus]])
     assert(censusCSV(0).state == "Andhra Pradesh")
+    assert(censusCSV.last.state == "West Bengal")
   }
 
   test("test_InputEmptyData_SortedOnStates_ReturnException") {
