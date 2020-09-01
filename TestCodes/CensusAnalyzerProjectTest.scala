@@ -129,7 +129,25 @@ class CensusAnalyzerProjectTest extends FunSuite{
   test("test_InputEmptyData_SortedOnPopulationDensityDecreasingOrder_RaisenoCensusDataException") {
     val objCensus = new CensusAnalyzer()
     val thrown = intercept[Exception] {
-      val sortedCensusData = objCensus.getStateCodeWiseSortedCensusData()
+      val sortedCensusData = objCensus.getPopulationDensityWiseSortedCensusData()
+    }
+    assert(thrown.getMessage == CensusAnalyzerExceptionEnum.noCensusData.toString)
+  }
+
+  test("test_GivenInput_IndianCensusData_SortedOnPopulationDecreasingOrder_ReturnSortedResult") {
+    val objCensus = new CensusAnalyzer()
+    objCensus.loadCensusData("./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCensusData.csv")
+    val sortedCensusData = objCensus.getPopulationWiseSortedCensusData()
+
+    val censusCSV = new Gson().fromJson(sortedCensusData,classOf[Array[IndiaStateCensus]])
+    assert(censusCSV(0).state == "Uttar Pradesh")
+    assert(censusCSV.last.state == "Sikkim")
+  }
+
+  test("test_InputEmptyData_SortedOnPopulationDecreasingOrder_RaisenoCensusDataException") {
+    val objCensus = new CensusAnalyzer()
+    val thrown = intercept[Exception] {
+      val sortedCensusData = objCensus.getPopulationWiseSortedCensusData()
     }
     assert(thrown.getMessage == CensusAnalyzerExceptionEnum.noCensusData.toString)
   }
