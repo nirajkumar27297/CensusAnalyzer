@@ -26,7 +26,7 @@ class CensusAnalyzer {
       case 2 => censusCSVList.sortBy(_.stateCode)
       case 3 => censusCSVList.sortBy(_.population).reverse
       case 4 => censusCSVList.sortBy(_.populationDensity).reverse
-      case 5 =>censusCSVList.sortBy(_.totalArea).reverse
+      case 5 => censusCSVList.sortBy(_.totalArea).reverse
     }
     val sortedStateCensusCensus = new Gson().toJson(censusCSVList)
     sortedStateCensusCensus
