@@ -179,4 +179,15 @@ class CensusAnalyzerProjectTest extends FunSuite{
     }
     assert(thrown.getMessage == CensusAnalyzerExceptionEnum.unableToParse.toString)
   }
+
+  test("test_GivenInput_USCensusData_SortedOnPopulationDecreasingOrder_ReturnSortedResult") {
+    val objCensus = new CensusAnalyzer()
+    objCensus.loadCensusData("./src/main/scala/CensusAnalyzerProject/Resources/USCensusData.csv")
+    val sortedCensusData = objCensus.getPopulationWiseSortedCensusData()
+
+    val censusCSV = new Gson().fromJson(sortedCensusData,classOf[Array[IndiaStateCensus]])
+    assert(censusCSV(0).state == "California")
+    assert(censusCSV.last.state == "Wyoming")
+  }
+
 }
