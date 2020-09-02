@@ -169,4 +169,41 @@ class CensusAnalyzerProjectTest extends FunSuite{
     }
     assert(thrown.getMessage == CensusAnalyzerExceptionEnum.noCensusData.toString)
   }
+
+  test("test_GivenInput_USCensusFileWithRightPath_MatchingNumberOfRows_ReturnNumberOfRows"){
+    val objCensus = new CensusAnalyzer()
+    assert(objCensus.loadCensusUSData("./src/main/scala/CensusAnalyzerProject/Resources/USCensusData.csv") == 51)
+  }
+
+  test("test_GivenInput_USCensusData_WithInputPathIsWrong_RaiseIncorrectFilePathException") {
+    val thrown = intercept[Exception] {
+      val objCensus = new CensusAnalyzer()
+      objCensus.loadCensusUSData("./src/scala/CensusAnalyzerProject/Resources/USCensusData.csv")
+    }
+    assert(thrown.getMessage == CensusAnalyzerExceptionEnum.inCorrectPath.toString)
+  }
+
+  test("test_GivenInput_USCensusData_WithInputFileTypeIsWrong_RaiseIncorrectFileException") {
+    val thrown = intercept[Exception] {
+      val objCensus = new CensusAnalyzer()
+      objCensus.loadCensusUSData("./src/main/scala/CensusAnalyzerProject/Resources/USCensusData.txt")
+    }
+    assert(thrown.getMessage == CensusAnalyzerExceptionEnum.inCorrectFile.toString)
+  }
+
+  test("test_GivenInput_USCensusData_WithInputFileDelimiterIsWrong_RaiseUnableToParseException") {
+    val thrown = intercept[Exception] {
+      val objCensus = new CensusAnalyzer()
+      objCensus.loadCensusUSData("./src/main/scala/CensusAnalyzerProject/Resources/USCensusDataWrongDelimiter.csv")
+    }
+    assert(thrown.getMessage == CensusAnalyzerExceptionEnum.unableToParse.toString)
+  }
+  
+  test("test_GivenInput_USCensusData_WithInputFileFieldsIsWrong_RaiseUnableToParseException") {
+    val objCensus = new CensusAnalyzer
+    val thrown = intercept[Exception] {
+      objCensus.loadCensusUSData("./src/main/scala/CensusAnalyzerProject/Resources/USCensusDataWrongFields.csv")
+    }
+    assert(thrown.getMessage == CensusAnalyzerExceptionEnum.unableToParse.toString)
+  }
 }

@@ -4,9 +4,9 @@ import java.nio.file.{Files, Paths}
 import java.util
 
 class CensusLoader {
-  def loadData[T](csvClass:Class[T],filepaths: String*): Map[String, IndiaStateCensusDAO] = {
+  def loadData[T](csvClass:Class[T],filepaths: String*): Map[String, CensusDAO] = {
     try {
-      var censusMap: Map[String, IndiaStateCensusDAO] = Map()
+      var censusMap: Map[String, CensusDAO] = Map()
       for (filepath <- filepaths) {
         if (!filepath.toLowerCase.endsWith(".csv")) {
           throw new CensusAnalyzerException(CensusAnalyzerExceptionEnum.inCorrectFile)
@@ -16,19 +16,19 @@ class CensusLoader {
         if (csvClass.getName == "CensusAnalyzerProject.IndiaStateCensus") {
           val censusCSVIterator: util.Iterator[IndiaStateCensus] = csvBuilder.getIterator(reader, classOf[IndiaStateCensus])
           censusCSVIterator.forEachRemaining { objDAO =>
-            censusMap += (objDAO.state -> new IndiaStateCensusDAO(objDAO))
+            censusMap += (objDAO.state -> new CensusDAO(objDAO))
           }
       }
         else if (csvClass.getName == "CensusAnalyzerProject.IndianStateCode") {
           val censusCSVIterator: util.Iterator[IndianStateCode] = csvBuilder.getIterator(reader, classOf[IndianStateCode])
           censusCSVIterator.forEachRemaining { objDAO =>
-            censusMap += (objDAO.stateName -> new IndiaStateCensusDAO(objDAO))
+            censusMap += (objDAO.stateName -> new CensusDAO(objDAO))
           }
         }
         else if(csvClass.getName == "CensusAnalyzerProject.USCensus") {
           val censusCSVIterator: util.Iterator[USCensus] = csvBuilder.getIterator(reader, classOf[USCensus])
           censusCSVIterator.forEachRemaining { objDAO =>
-            censusMap += (objDAO.state -> new IndiaStateCensusDAO(objDAO))
+            censusMap += (objDAO.state -> new CensusDAO(objDAO))
           }
         }
       }
