@@ -2,16 +2,18 @@ package CensusAnalyzerProject
 import com.google.gson.Gson
 
 class CensusAnalyzer {
-  var censusMap:Map[String,IndiaStateCensusDAO] = Map()
-  var censusStateMap:Map[String,IndiaStateCensusDAO] = Map()
+  var censusMap:Map[String,CensusDAO] = Map()
 
-  def loadCensusData(filepath:String):Int = {
-    censusMap = new CensusLoader().loadData(classOf[IndiaStateCensus],filepath)
+  def loadCensusData(filepath:String*):Int = {
+    if(filepath.length > 1) {
+      println("Indian State Census")
+      censusMap = new CensusAdapter().loadData(filepath(0),filepath(1))
+    }
+    else if(filepath.length == 1) {
+      println("US State Census")
+      censusMap = new CensusAdapter().loadData(filepath(0))
+    }
     censusMap.size
-  }
-  def loadCensusStateData(filepath:String):Int = {
-    censusStateMap =  new CensusLoader().loadData(classOf[IndianStateCode],filepath)
-    censusStateMap.size
   }
 
   def sort(choice:Int):String = {
@@ -23,18 +25,14 @@ class CensusAnalyzer {
       case 1 => censusCSVList.sortBy(_.state)
       case 2 => censusCSVList.sortBy(_.stateCode)
       case 3 => censusCSVList.sortBy(_.population).reverse
-      case 4 => censusCSVList.sortBy(_.densityPerSqKm).reverse
-      case 5 =>censusCSVList.sortBy(_.areaInSqKm).reverse
+      case 4 => censusCSVList.sortBy(_.populationDensity).reverse
+      case 5 =>censusCSVList.sortBy(_.totalArea).reverse
     }
     val sortedStateCensusCensus = new Gson().toJson(censusCSVList)
     sortedStateCensusCensus
   }
 
   def getStateCodeWiseSortedCensusData():String = {
-    for(statenameCensus <- censusMap.keys;statename <- censusStateMap.keys;if(statename.equals(statenameCensus)) == true){
-      var censusData = censusMap(statenameCensus)
-      censusData.stateCode = censusStateMap(statename).stateCode
-    }
     sort(2)
     }
 
