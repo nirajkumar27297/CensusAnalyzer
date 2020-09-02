@@ -198,7 +198,7 @@ class CensusAnalyzerProjectTest extends FunSuite{
     }
     assert(thrown.getMessage == CensusAnalyzerExceptionEnum.unableToParse.toString)
   }
-  
+
   test("test_GivenInput_USCensusData_WithInputFileFieldsIsWrong_RaiseUnableToParseException") {
     val objCensus = new CensusAnalyzer
     val thrown = intercept[Exception] {
