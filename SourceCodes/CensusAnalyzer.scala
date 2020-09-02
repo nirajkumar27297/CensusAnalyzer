@@ -3,24 +3,18 @@ import com.google.gson.Gson
 
 class CensusAnalyzer {
   var censusMap:Map[String,CensusDAO] = Map()
-  var censusStateMap:Map[String,CensusDAO] = Map()
 
-  def loadCensusData(filepath:String):Int = {
-    censusMap = new CensusLoader().loadData(classOf[IndiaStateCensus],filepath)
+  def loadCensusData(filepath:String*):Int = {
+    if(filepath.length > 1) {
+      println("Indian State Census")
+      censusMap = new CensusAdapter().loadData(filepath(0),filepath(1))
+    }
+    else if(filepath.length == 1) {
+      println("US State Census")
+      censusMap = new CensusAdapter().loadData(filepath(0))
+    }
     censusMap.size
   }
-
-  def loadCensusStateData(filepath:String):Int = {
-    censusStateMap =  new CensusLoader().loadData(classOf[IndianStateCode],filepath)
-    censusStateMap.size
-  }
-
-  def loadCensusUSData(filepath:String):Int = {
-    censusMap = new CensusLoader().loadData(classOf[USCensus],filepath)
-    censusMap.size
-
-  }
-
 
   def sort(choice:Int):String = {
     if (censusMap == null || censusMap.size == 0) {
@@ -39,10 +33,6 @@ class CensusAnalyzer {
   }
 
   def getStateCodeWiseSortedCensusData():String = {
-    for(statenameCensus <- censusMap.keys;statename <- censusStateMap.keys;if(statename.equals(statenameCensus)) == true){
-      var censusData = censusMap(statenameCensus)
-      censusData.stateCode = censusStateMap(statename).stateCode
-    }
     sort(2)
     }
 

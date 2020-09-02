@@ -7,11 +7,6 @@ class CensusDAO {
   var populationDensity:Double = 0
   var population:Double = 0
   var stateCode:String = null
-  var housingUnits:Double = 0
-  var waterArea:Double = 0
-  var landArea:Double = 0
-  var housingDensity:Double = 0
-
   def this(indiaCensusCSV:IndiaStateCensus) {
     this()
     state = indiaCensusCSV.state
@@ -33,9 +28,5 @@ class CensusDAO {
     totalArea = usCensusCSV.totalArea
     populationDensity = usCensusCSV.populationDensity
     population = usCensusCSV.population
-    housingUnits = usCensusCSV.housingUnits
-    waterArea = usCensusCSV.waterArea
-    landArea = usCensusCSV.landArea
-    housingDensity = usCensusCSV.housingDensity
   }
 }
