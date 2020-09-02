@@ -22,16 +22,16 @@ class CensusAdapter {
           censusMap += (objDAO.state -> new CensusDAO(objDAO))
         }
       }
-      else if(country.equals(Country.USA)){
-          val censusCSVIterator: util.Iterator[USCensusDTO] = csvBuilderStateCensus.getIterator(readerStateCensus, classOf[USCensusDTO])
-          censusCSVIterator.forEachRemaining { objDAO =>
-            censusMap += (objDAO.state -> new CensusDAO(objDAO))
-          }
+      else if(country.equals(Country.USA)) {
+        val censusCSVIterator: util.Iterator[USCensusDTO] = csvBuilderStateCensus.getIterator(readerStateCensus, classOf[USCensusDTO])
+        censusCSVIterator.forEachRemaining { objDAO =>
+          censusMap += (objDAO.state -> new CensusDAO(objDAO))
+        }
+      }
       else {
           throw new CensusAnalyzerException(CensusAnalyzerExceptionEnum.invalidCountry)
         }
-      }
-      if(filepaths.length == 1){
+      if(filepaths.length == 1) {
         return censusMap
       }
       loadStateCode(censusMap,filepaths(1):String)
