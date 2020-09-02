@@ -15,15 +15,13 @@ class CensusLoader {
         val csvBuilder = CSVBuilderFactory.createCSVBuilder()
         if (csvClass.getName == "CensusAnalyzerProject.IndiaStateCensus") {
           val censusCSVIterator: util.Iterator[IndiaStateCensus] = csvBuilder.getIterator(reader, classOf[IndiaStateCensus])
-          while (censusCSVIterator.hasNext()) {
-            val objDAO = censusCSVIterator.next()
+          censusCSVIterator.forEachRemaining { objDAO =>
             censusMap += (objDAO.state -> new IndiaStateCensusDAO(objDAO))
           }
-        }
+      }
         else if (csvClass.getName == "CensusAnalyzerProject.IndianStateCode") {
           val censusCSVIterator: util.Iterator[IndianStateCode] = csvBuilder.getIterator(reader, classOf[IndianStateCode])
-          while (censusCSVIterator.hasNext()) {
-            val objDAO = censusCSVIterator.next()
+          censusCSVIterator.forEachRemaining { objDAO =>
             censusMap += (objDAO.stateName -> new IndiaStateCensusDAO(objDAO))
           }
         }
