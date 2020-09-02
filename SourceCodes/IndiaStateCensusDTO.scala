@@ -1,7 +1,7 @@
 package CensusAnalyzerProject
 import com.opencsv.bean.CsvBindByName
 
-class IndiaStateCensus {
+class IndiaStateCensusDTO {
   @CsvBindByName(required = true,column = "State")
   var state:String = null
 
