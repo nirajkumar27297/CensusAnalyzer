@@ -1,19 +1,19 @@
 import org.scalatest.FunSuite
-import CensusAnalyzerProject.{CensusAnalyzer, CensusAnalyzerExceptionEnum, IndiaStateCensus}
+import CensusAnalyzerProject.{CensusAnalyzer, CensusAnalyzerExceptionEnum, Country, IndiaStateCensusDTO}
 import com.google.gson.Gson
 
 class CensusAnalyzerProjectTest extends FunSuite{
 
   test("test_GivenInput_IndiaStateCensusFileWithRightPath_MatchingNumberOfRows_ReturnNumberOfRows"){
     val objCensus = new CensusAnalyzer()
-    assert(objCensus.loadCensusData("./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCensusData.csv"
+    assert(objCensus.loadCensusData(Country.India,"./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCensusData.csv"
     ,"./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCode.csv") == 29)
   }
 
   test("test_GivenInput_IndiaStateCensus_WithInputPathIsWrong_RaiseIncorrectFilePathException") {
     val thrown = intercept[Exception] {
     val objCensus = new CensusAnalyzer()
-    objCensus.loadCensusData("./src/scala/CensusAnalyzerProject/Resources/IndiaStateCensusData.csv",
+    objCensus.loadCensusData(Country.India,"./src/scala/CensusAnalyzerProject/Resources/IndiaStateCensusData.csv",
       "./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCode.csv")
     }
     assert(thrown.getMessage == CensusAnalyzerExceptionEnum.inCorrectPath.toString)
@@ -22,7 +22,7 @@ class CensusAnalyzerProjectTest extends FunSuite{
   test("test_GivenInput_IndiaStateCensus_WithInputFileTypeIsWrong_RaiseIncorrectFileException") {
     val thrown = intercept[Exception] {
       val objCensus = new CensusAnalyzer()
-      objCensus.loadCensusData("./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCensusData.txt"
+      objCensus.loadCensusData(Country.India,"./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCensusData.txt"
         ,"./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCode.csv")
     }
     assert(thrown.getMessage == CensusAnalyzerExceptionEnum.inCorrectFile.toString)
@@ -31,7 +31,7 @@ class CensusAnalyzerProjectTest extends FunSuite{
   test("test_GivenInput_IndiaStateCensus_WithInputFileDelimiterIsWrong_RaiseUnableToParseException") {
     val thrown = intercept[Exception] {
       val objCensus = new CensusAnalyzer()
-      objCensus.loadCensusData("./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCensusDataWrongDelimiter.csv"
+      objCensus.loadCensusData(Country.India,"./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCensusDataWrongDelimiter.csv"
         ,"./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCode.csv")
     }
     assert(thrown.getMessage == CensusAnalyzerExceptionEnum.unableToParse.toString)
@@ -40,7 +40,7 @@ class CensusAnalyzerProjectTest extends FunSuite{
   test("test_GivenInput_IndiaStateCensus_WithInputFileFieldsIsWrong_RaiseUnableToParseException") {
     val objCensus = new CensusAnalyzer
     val thrown = intercept[Exception] {
-      objCensus.loadCensusData("./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCensusDataWrongFields.csv"
+      objCensus.loadCensusData(Country.India,"./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCensusDataWrongFields.csv"
         ,"./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCode.csv")
     }
     assert(thrown.getMessage == CensusAnalyzerExceptionEnum.unableToParse.toString)
@@ -49,11 +49,11 @@ class CensusAnalyzerProjectTest extends FunSuite{
 
   test("test_GivenInput_IndianCensusData_SortedOnStates_ReturnSortedResult") {
     val objCensus = new CensusAnalyzer()
-    objCensus.loadCensusData("./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCensusData.csv"
+    objCensus.loadCensusData(Country.India,"./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCensusData.csv"
       ,"./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCode.csv")
     val sortedCensusData = objCensus.getStateWiseSortedCensusData()
 
-    val censusCSV = new Gson().fromJson(sortedCensusData,classOf[Array[IndiaStateCensus]])
+    val censusCSV = new Gson().fromJson(sortedCensusData,classOf[Array[IndiaStateCensusDTO]])
     assert(censusCSV(0).state == "Andhra Pradesh")
     assert(censusCSV.last.state == "West Bengal")
   }
@@ -68,12 +68,11 @@ class CensusAnalyzerProjectTest extends FunSuite{
 
   test("test_GivenInput_IndianCensusDataAndIndianStateCodes_SortedOnStatesCodes_ReturnSortedResult") {
     val objCensus = new CensusAnalyzer()
-    objCensus.loadCensusData("./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCensusData.csv"
+    objCensus.loadCensusData(Country.India,"./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCensusData.csv"
       ,"./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCode.csv")
 
     val sortedCensusData = objCensus.getStateCodeWiseSortedCensusData()
-
-    val censusCSV = new Gson().fromJson(sortedCensusData,classOf[Array[IndiaStateCensus]])
+    val censusCSV = new Gson().fromJson(sortedCensusData,classOf[Array[IndiaStateCensusDTO]])
     assert(censusCSV(0).state == "Andhra Pradesh")
     assert(censusCSV.last.state == "West Bengal")
   }
@@ -88,11 +87,11 @@ class CensusAnalyzerProjectTest extends FunSuite{
 
   test("test_GivenInput_IndianCensusData_SortedOnPopulationDensityDecreasingOrder_ReturnSortedResult") {
     val objCensus = new CensusAnalyzer()
-    objCensus.loadCensusData("./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCensusData.csv"
+    objCensus.loadCensusData(Country.India,"./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCensusData.csv"
       ,"./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCode.csv")
     val sortedCensusData = objCensus.getPopulationDensityWiseSortedCensusData()
 
-    val censusCSV = new Gson().fromJson(sortedCensusData,classOf[Array[IndiaStateCensus]])
+    val censusCSV = new Gson().fromJson(sortedCensusData,classOf[Array[IndiaStateCensusDTO]])
     assert(censusCSV(0).state == "Bihar")
     assert(censusCSV.last.state == "Arunachal Pradesh")
   }
@@ -107,11 +106,11 @@ class CensusAnalyzerProjectTest extends FunSuite{
 
   test("test_GivenInput_IndianCensusData_SortedOnPopulationDecreasingOrder_ReturnSortedResult") {
     val objCensus = new CensusAnalyzer()
-    objCensus.loadCensusData("./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCensusData.csv"
+    objCensus.loadCensusData(Country.India,"./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCensusData.csv"
       ,"./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCode.csv")
     val sortedCensusData = objCensus.getPopulationWiseSortedCensusData()
 
-    val censusCSV = new Gson().fromJson(sortedCensusData,classOf[Array[IndiaStateCensus]])
+    val censusCSV = new Gson().fromJson(sortedCensusData,classOf[Array[IndiaStateCensusDTO]])
     assert(censusCSV(0).state == "Uttar Pradesh")
     assert(censusCSV.last.state == "Sikkim")
   }
@@ -126,11 +125,11 @@ class CensusAnalyzerProjectTest extends FunSuite{
 
   test("test_GivenInput_IndianCensusData_SortedOnAreaDecreasingOrder_ReturnSortedResult") {
     val objCensus = new CensusAnalyzer()
-    objCensus.loadCensusData("./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCensusData.csv"
+    objCensus.loadCensusData(Country.India,"./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCensusData.csv"
       ,"./src/main/scala/CensusAnalyzerProject/Resources/IndiaStateCode.csv")
     val sortedCensusData = objCensus.getAreaWiseSortedCensusData()
 
-    val censusCSV = new Gson().fromJson(sortedCensusData,classOf[Array[IndiaStateCensus]])
+    val censusCSV = new Gson().fromJson(sortedCensusData,classOf[Array[IndiaStateCensusDTO]])
     assert(censusCSV(0).state == "Rajasthan")
     assert(censusCSV.last.state == "Goa")
   }
@@ -145,13 +144,13 @@ class CensusAnalyzerProjectTest extends FunSuite{
 
   test("test_GivenInput_USCensusFileWithRightPath_MatchingNumberOfRows_ReturnNumberOfRows"){
     val objCensus = new CensusAnalyzer()
-    assert(objCensus.loadCensusData("./src/main/scala/CensusAnalyzerProject/Resources/USCensusData.csv") == 51)
+    assert(objCensus.loadCensusData(Country.USA,"./src/main/scala/CensusAnalyzerProject/Resources/USCensusData.csv") == 51)
   }
 
   test("test_GivenInput_USCensusData_WithInputPathIsWrong_RaiseIncorrectFilePathException") {
     val thrown = intercept[Exception] {
       val objCensus = new CensusAnalyzer()
-      objCensus.loadCensusData("./src/scala/CensusAnalyzerProject/Resources/USCensusData.csv")
+      objCensus.loadCensusData(Country.USA,"./src/scala/CensusAnalyzerProject/Resources/USCensusData.csv")
     }
     assert(thrown.getMessage == CensusAnalyzerExceptionEnum.inCorrectPath.toString)
   }
@@ -159,7 +158,7 @@ class CensusAnalyzerProjectTest extends FunSuite{
   test("test_GivenInput_USCensusData_WithInputFileTypeIsWrong_RaiseIncorrectFileException") {
     val thrown = intercept[Exception] {
       val objCensus = new CensusAnalyzer()
-      objCensus.loadCensusData("./src/main/scala/CensusAnalyzerProject/Resources/USCensusData.txt")
+      objCensus.loadCensusData(Country.USA,"./src/main/scala/CensusAnalyzerProject/Resources/USCensusData.txt")
     }
     assert(thrown.getMessage == CensusAnalyzerExceptionEnum.inCorrectFile.toString)
   }
@@ -167,7 +166,7 @@ class CensusAnalyzerProjectTest extends FunSuite{
   test("test_GivenInput_USCensusData_WithInputFileDelimiterIsWrong_RaiseUnableToParseException") {
     val thrown = intercept[Exception] {
       val objCensus = new CensusAnalyzer()
-      objCensus.loadCensusData("./src/main/scala/CensusAnalyzerProject/Resources/USCensusDataWrongDelimiter.csv")
+      objCensus.loadCensusData(Country.USA,"./src/main/scala/CensusAnalyzerProject/Resources/USCensusDataWrongDelimiter.csv")
     }
     assert(thrown.getMessage == CensusAnalyzerExceptionEnum.unableToParse.toString)
   }
@@ -175,19 +174,58 @@ class CensusAnalyzerProjectTest extends FunSuite{
   test("test_GivenInput_USCensusData_WithInputFileFieldsIsWrong_RaiseUnableToParseException") {
     val objCensus = new CensusAnalyzer
     val thrown = intercept[Exception] {
-      objCensus.loadCensusData("./src/main/scala/CensusAnalyzerProject/Resources/USCensusDataWrongFields.csv")
+      objCensus.loadCensusData(Country.USA,"./src/main/scala/CensusAnalyzerProject/Resources/USCensusDataWrongFields.csv")
     }
     assert(thrown.getMessage == CensusAnalyzerExceptionEnum.unableToParse.toString)
   }
 
   test("test_GivenInput_USCensusData_SortedOnPopulationDecreasingOrder_ReturnSortedResult") {
     val objCensus = new CensusAnalyzer()
-    objCensus.loadCensusData("./src/main/scala/CensusAnalyzerProject/Resources/USCensusData.csv")
+    objCensus.loadCensusData(Country.USA,"./src/main/scala/CensusAnalyzerProject/Resources/USCensusData.csv")
     val sortedCensusData = objCensus.getPopulationWiseSortedCensusData()
 
-    val censusCSV = new Gson().fromJson(sortedCensusData,classOf[Array[IndiaStateCensus]])
+    val censusCSV = new Gson().fromJson(sortedCensusData,classOf[Array[IndiaStateCensusDTO]])
     assert(censusCSV(0).state == "California")
     assert(censusCSV.last.state == "Wyoming")
   }
 
+  test("test_GivenInput_USCensusData_SortedOnAreaDecreasingOrder_ReturnSortedResult") {
+    val objCensus = new CensusAnalyzer()
+    objCensus.loadCensusData(Country.USA,"./src/main/scala/CensusAnalyzerProject/Resources/USCensusData.csv")
+    val sortedCensusData = objCensus.getAreaWiseSortedCensusData()
+
+    val censusCSV = new Gson().fromJson(sortedCensusData,classOf[Array[IndiaStateCensusDTO]])
+    assert(censusCSV(0).state == "Alaska")
+    assert(censusCSV.last.state == "District of Columbia")
+  }
+
+  test("test_GivenInput_USCensusData_SortedOnPopulationDensityDecreasingOrder_ReturnSortedResult") {
+    val objCensus = new CensusAnalyzer()
+    objCensus.loadCensusData(Country.USA,"./src/main/scala/CensusAnalyzerProject/Resources/USCensusData.csv")
+    val sortedCensusData = objCensus.getPopulationDensityWiseSortedCensusData()
+
+    val censusCSV = new Gson().fromJson(sortedCensusData,classOf[Array[IndiaStateCensusDTO]])
+    assert(censusCSV(0).state == "District of Columbia")
+    assert(censusCSV.last.state == "Alaska")
+  }
+
+  test("test_GivenInput_USCensusData_SortedOnStateWiseNameDecreasingOrder_ReturnSortedResult") {
+    val objCensus = new CensusAnalyzer()
+    objCensus.loadCensusData(Country.USA,"./src/main/scala/CensusAnalyzerProject/Resources/USCensusData.csv")
+    val sortedCensusData = objCensus.getStateWiseSortedCensusData()
+
+    val censusCSV = new Gson().fromJson(sortedCensusData,classOf[Array[IndiaStateCensusDTO]])
+    assert(censusCSV(0).state == "Alabama")
+    assert(censusCSV.last.state == "Wyoming")
+  }
+
+  test("test_GivenInput_USCensusData_SortedOnStateWiseCodeDecreasingOrder_ReturnSortedResult") {
+    val objCensus = new CensusAnalyzer()
+    objCensus.loadCensusData(Country.USA,"./src/main/scala/CensusAnalyzerProject/Resources/USCensusData.csv")
+    val sortedCensusData = objCensus.getStateCodeWiseSortedCensusData()
+
+    val censusCSV = new Gson().fromJson(sortedCensusData,classOf[Array[IndiaStateCensusDTO]])
+    assert(censusCSV(0).state == "Alaska")
+    assert(censusCSV.last.state == "Wyoming")
+  }
 }
