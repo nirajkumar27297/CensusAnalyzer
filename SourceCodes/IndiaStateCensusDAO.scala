@@ -3,10 +3,14 @@ package CensusAnalyzerProject
 class IndiaStateCensusDAO {
 
   var state:String = null
-  var areaInSqKm = 0
-  var densityPerSqKm = 0
-  var population = 0
+  var areaInSqKm:Double = 0
+  var densityPerSqKm:Double = 0
+  var population:Double = 0
   var stateCode:String = null
+  var housingUnits:Double = 0
+  var waterArea:Double = 0
+  var landArea:Double = 0
+  var housingDensity:Double = 0
 
   def this(indiaCensusCSV:IndiaStateCensus) {
     this()
@@ -20,5 +24,18 @@ class IndiaStateCensusDAO {
     this()
     state = indiaStateCodeCSV.stateName
     stateCode = indiaStateCodeCSV.stateCode
+  }
+
+  def this(usCensusCSV:USCensus) {
+    this()
+    stateCode = usCensusCSV.stateId
+    state = usCensusCSV.state
+    areaInSqKm = usCensusCSV.totalArea
+    densityPerSqKm = usCensusCSV.populationDensity
+    population = usCensusCSV.population
+    housingUnits = usCensusCSV.housingUnits
+    waterArea = usCensusCSV.waterArea
+    landArea = usCensusCSV.landArea
+    housingDensity = usCensusCSV.housingDensity
   }
 }
