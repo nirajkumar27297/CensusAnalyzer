@@ -1,18 +1,13 @@
 package CensusAnalyzerProject
+import CensusAnalyzerProject.Country.Country
 import com.google.gson.Gson
 
 class CensusAnalyzer {
   var censusMap:Map[String,CensusDAO] = Map()
 
-  def loadCensusData(filepath:String*):Int = {
-    if(filepath.length > 1) {
-      println("Indian State Census")
-      censusMap = new CensusAdapter().loadData(filepath(0),filepath(1))
-    }
-    else if(filepath.length == 1) {
-      println("US State Census")
-      censusMap = new CensusAdapter().loadData(filepath(0))
-    }
+
+  def loadCensusData(country: Country,filepath:String*):Int = {
+    censusMap = new CensusAdapter().loadData(country,filepath)
     censusMap.size
   }
 
