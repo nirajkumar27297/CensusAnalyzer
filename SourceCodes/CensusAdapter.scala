@@ -18,19 +18,20 @@ class CensusAdapter {
       val csvBuilderStateCensus = CSVBuilderFactory.createCSVBuilder()
       if (country.equals(Country.India)) {
         val censusCSVIteratorStateCensus: util.Iterator[IndiaStateCensusDTO] = csvBuilderStateCensus.getIterator(readerStateCensus, classOf[IndiaStateCensusDTO])
-        censusCSVIteratorStateCensus.forEachRemaining { objDAO =>
-          censusMap += (objDAO.state -> new CensusDAO(objDAO))
+        censusCSVIteratorStateCensus.forEachRemaining { objDTO =>
+          censusMap += (objDTO.state -> new CensusDAO(objDTO))
         }
       }
       else if(country.equals(Country.USA)) {
         val censusCSVIterator: util.Iterator[USCensusDTO] = csvBuilderStateCensus.getIterator(readerStateCensus, classOf[USCensusDTO])
-        censusCSVIterator.forEachRemaining { objDAO =>
-          censusMap += (objDAO.state -> new CensusDAO(objDAO))
+        censusCSVIterator.forEachRemaining { objDTO =>
+          censusMap += (objDTO.state -> new CensusDAO(objDTO))
         }
       }
       else {
           throw new CensusAnalyzerException(CensusAnalyzerExceptionEnum.invalidCountry)
         }
+      //If more than one file is there then loading state code for the file
       if(filepaths.length == 1) {
         return censusMap
       }
@@ -42,16 +43,18 @@ class CensusAdapter {
       case _:java.lang.RuntimeException => throw new CensusAnalyzerException(CensusAnalyzerExceptionEnum.unableToParse)
     }
   }
+
   private def loadStateCode(censusMap:Map[String, CensusDAO],filepath:String): Map[String, CensusDAO] = {
     try {
       val readerStateCode = Files.newBufferedReader(Paths.get(filepath))
       val csvBuilderStateCensus = CSVBuilderFactory.createCSVBuilder()
       val censusCSVIterator: util.Iterator[IndianStateCodeDTO] = csvBuilderStateCensus.getIterator(readerStateCode, classOf[IndianStateCodeDTO])
       var censusStateMap: Map[String, CensusDAO] = Map()
-      censusCSVIterator.forEachRemaining { objDAO =>
-        censusStateMap += (objDAO.stateName -> new CensusDAO(objDAO))
+      censusCSVIterator.forEachRemaining { objDTO =>
+        censusStateMap += (objDTO.stateName -> new CensusDAO(objDTO))
       }
-      for (statenameCensus <- censusMap.keys; statename <- censusStateMap.keys; if (statename.equals(statenameCensus)) == true) {
+      //For the states in censusMap loaded by censusCSV,assigning state code to it from the StateCode csv file
+      for (statenameCensus <- censusMap.keys; statename <- censusStateMap.keys; if (statename.equals(statenameCensus))) {
         val censusData = censusMap(statenameCensus)
         censusData.stateCode = censusStateMap(statename).stateCode
       }
