@@ -43,6 +43,7 @@ class CensusAdapter {
       case _:java.lang.RuntimeException => throw new CensusAnalyzerException(CensusAnalyzerExceptionEnum.unableToParse)
     }
   }
+
   private def loadStateCode(censusMap:Map[String, CensusDAO],filepath:String): Map[String, CensusDAO] = {
     try {
       val readerStateCode = Files.newBufferedReader(Paths.get(filepath))
