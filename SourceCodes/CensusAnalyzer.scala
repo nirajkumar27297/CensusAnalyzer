@@ -11,7 +11,7 @@ class CensusAnalyzer {
   }
 
   def sort(choice:Int):String = {
-    if (censusMap == null || censusMap.size == 0) {
+    if (censusMap.size == 0) {
       throw new CensusAnalyzerException(CensusAnalyzerExceptionEnum.noCensusData)
     }
     var censusCSVList = censusMap.values.toArray
